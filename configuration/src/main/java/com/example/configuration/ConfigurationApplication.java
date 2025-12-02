@@ -54,13 +54,15 @@ class CustomerServiceRunner {
     }
 
     void run(String[] args) throws Exception {
-        if (this.customerService.findAll().isEmpty()) {
-            IO.println("going to initialize the SQL database");
-            var saved = this.customerService.saveAll(
-                    new Customer(null, "Jane"), new Customer(null, "John"));
-            IO.println(saved);
-            Assert.state(saved.size() == 2, "there should be two records in the SQL database");
-        }
+        if (!this.customerService.findAll().isEmpty())
+            return;
+
+        IO.println("going to initialize the SQL database");
+        var saved = this.customerService.saveAll(
+                new Customer(null, "Jane"), new Customer(null, "John"));
+        IO.println(saved);
+        Assert.state(saved.size() == 2, "there should be two records in the SQL database");
+
     }
 }
 
@@ -107,7 +109,7 @@ class JdbcCustomerService implements CustomerService {
             if (returnedKeys.get("id") instanceof Number number)
                 ids.add(number.intValue());
         }
-        return this.findById(ids.toArray(new Integer[0]));
+        return findById(ids.toArray(new Integer[0]));
     }
 }
 
